@@ -26,7 +26,7 @@ def PageScraperID(url, pages=1):
 
         for li in workinfo:
             theid = li.get('id')
-            WorkIds.append(theid[6:])
+            WorkIds.append(theid[5:])  
             
         url = 'https://archiveofourown.org/' + NextPage
     
@@ -40,7 +40,7 @@ def WorkTextScraper(IdList):
         return
     for i in IdList:
         time.sleep(2)
-        html = requests.get('https://archiveofourown.org/works/' + '49526').text
+        html = requests.get('https://archiveofourown.org/works/' + i).text
         soup = BeautifulSoup(html, features='lxml')
         page = soup.find('div')
         body = page.find('div', class_='wrapper')

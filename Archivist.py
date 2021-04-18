@@ -11,6 +11,7 @@ WorkText = []
 
 #Function Takes a URL and a number of pages to return a list of all Work Id's from those pages
 def PageScraperID(url, pages=1):
+    WorkIds = []
     for i in range(pages):
         time.sleep(2)
         html = requests.get(url).text
@@ -35,6 +36,7 @@ def PageScraperID(url, pages=1):
 
 #Function takes a list of Work Id's to return a list of the text for the first chapter of each fic               
 def WorkTextScraper(IdList):
+    WorkText = []
     if IdList == []:
         print("There are no work ID's in this list")
         return

@@ -11,6 +11,7 @@ WorkText = []
 
 #Function Takes a URL and a number of pages to return a list of all Work Id's from those pages
 def PageScraperID(url, pages=1):
+    global WorkIds
     WorkIds = []
     for i in range(pages):
         time.sleep(2)
@@ -30,12 +31,13 @@ def PageScraperID(url, pages=1):
             WorkIds.append(theid[5:])  
             
         url = 'https://archiveofourown.org/' + NextPage
-    
+        
     return
 
 
 #Function takes a list of Work Id's to return a list of the text for the first chapter of each fic               
 def WorkTextScraper(IdList):
+    global WorkText
     WorkText = []
     if IdList == []:
         print("There are no work ID's in this list")

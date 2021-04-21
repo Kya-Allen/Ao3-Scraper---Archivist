@@ -1,5 +1,10 @@
 # Ao3-Scraper - Archivist
 In progress module for webscraping Archive of Our Own Data.
+#### Dependencies:
+ * pandas
+ * bs4
+ * requests
+ * time
 ## Current Functionality: 
   * returns a list WorkIds given a URL and page=[number of pages] as arguments to PageScraperID()
   * returns a list WorkText of First Chapter texts for each ID with WorkTextScraper(WorkIds)

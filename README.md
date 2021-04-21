@@ -1,2 +1,9 @@
 # Ao3-Scraper - Archivist
-In progress module for webscraping Archive of Our Own Data. Current functionality returns a list of work Id's given a URL and page=[number of pages] as arguments to PageScraperID and then can return a list of text data associated with each ID given the List of Id's as an argument
+In progress module for webscraping Archive of Our Own Data.
+## Current Functionality: 
+  * returns a list WorkIds given a URL and page=[number of pages] as arguments to PageScraperID()
+  * returns a list WorkText of First Chapter texts for each ID with WorkTextScraper(WorkIds)
+## Future Plans:
+  * Enable Scraping All metadata from a given fic (Kudos, tags, etc.)
+  * Enable Scraping full fics (not just first chapter, as it does not)
+  * Productionize a browser extension with a simple UI to allow non less technical users to set parameters, scrape, and download a csv in browser

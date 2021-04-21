@@ -10,5 +10,5 @@ In progress module for webscraping Archive of Our Own Data.
   * returns a list WorkText of First Chapter texts for each ID with WorkTextScraper(WorkIds)
 ## Future Plans:
   * Enable Scraping All metadata from a given fic (Kudos, tags, etc.)
-  * Enable Scraping full fics (not just first chapter, as it does not)
+  * Enable Scraping full fics (not just first chapter, as it does now)
   * Productionize a browser extension with a simple UI to allow non less technical users to set parameters, scrape, and download a csv in browser

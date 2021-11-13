@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Aug 17 23:00:13 2021
-
 @author: Kya Allen
 """
 #Eventually Intend to add write-to-DataFrame functionality.
@@ -16,24 +15,64 @@ work_text = []
 works_data = []
 
 ID_option = True
-title_option = False
-author_option = False
-datetime_option = False
-fandom_option = False
-archive_tags_option = False
-tags_option = False
-stats_option = False
+title_option = True
+author_option = True
+datetime_option = True
+fandom_option = True
+archive_tags_option = True
+tags_option = True
+stats_option = True
+kudos_users = True
 
-#class Work:
-#    
-#    def __init__(self, ID, title, author, datetime, rating, warnings, category, status, warning_tags, relationship_tags, freeform_tags, Language, wordcount, chapter_count, comment_count, Bookmark_count, Kudos_count, hits):
-#        self.ID = ID
-#        
-#    def set_title(self, title):
-#        self.title = title
-#    
-#    def set_author(self, author):
-#        self.title = title
+base_site = 'https://archiveofourown.org/'
+base_work = 'https://archiveofourown.org/works/'
+
+
+def get_kudos_users(SoupObject):
+    div = SoupObject.find('div', {'id': 'main'})
+    div2 = div.find('div', {'id': 'kudos'})
+    if div2 is None:
+        return ['N/A']
+    obj2 = div2.find('p', {'class': 'kudos'})
+    theNames = obj2.find_all('a')
+    kudoNames = []
+    
+    for name in theNames:
+        kudoNames.append(name.text)
+    
+    return kudoNames
+
+def scrape_kudos_pages(kudosUrl):
+    kudosNames = []
+    blob = requests.get(kudosUrl).text
+    obj = BeautifulSoup(blob, features='lxml')
+    pageNavigation = obj.find('ol', {'class': 'pagination actions'})
+    nextClicks = 1
+    
+    if pageNavigation is not None:    
+        pages = pageNavigation.find_all('li')
+        counter = 0
+                        
+        for li in pages:
+            counter = counter + 1
+    
+        nextClicks = counter - 2   
+        
+    tempObject = obj
+    increment = 1
+        
+    while nextClicks > 0:
+        time.sleep(1.5)
+        kudosNames = kudosNames + get_kudos_users(tempObject)
+        increment = increment + 1
+        
+        if pageNavigation is not None:
+            tempBlob = requests.get(kudosUrl + '?page=' + str(increment)).text
+            tempObject = BeautifulSoup(tempBlob, features='lxml')
+        
+        nextClicks = nextClicks - 1
+    
+    return kudosNames
 
 
 #Function Takes a URL and a number of pages to return a list of all Work Id's from those pages
@@ -43,7 +82,7 @@ def info_from_searchpage(url, pages=1):
     work_ids = []
     works_data = []
     for i in range(pages):
-        time.sleep(2)
+        time.sleep(1.5)
         html = requests.get(url).text
         soup = BeautifulSoup(html, features='lxml')
         
@@ -155,14 +194,19 @@ def info_from_searchpage(url, pages=1):
                 current_data.append(bookmarks_count)
                 current_data.append(hits)
                 
+            if kudos_users: 
+                if kudos_count != 0:
+                    kudoPage = base_work + str(theid[5:]) + '/kudos'
+                    current_data.append(scrape_kudos_pages(kudoPage))
+                    
             
             works_data.append(current_data)
             
-            url = 'https://archiveofourown.org/' + NextTag.get('href')
+            url = base_site + NextTag.get('href')
         
     return
 
-def as_csv():
+def save_as_csv():
     my_columns = []
     if ID_option:
         my_columns.append('Id')
@@ -192,9 +236,11 @@ def as_csv():
         my_columns.append('Kudos Count')
         my_columns.append('Bookmarks Count')
         my_columns.append('hits')
+    if kudos_users:
+        my_columns.append('Kudos Users')
     
     df = pd.DataFrame(works_data, columns = my_columns)
-    df.to_csv('./testfol/testfile.csv', index=False)
+    df.to_csv('C:/Users/ka99x/Documents/ArchivistFiles/testdata.csv', index=False)
     
     
     return
@@ -219,4 +265,18 @@ def chapter_from_id(IdList):
         
     return
 
-#def get_tags()
+info_from_searchpage('https://archiveofourown.org/works/search?utf8=%E2%9C%93&work_search%5Bquery%5D=rwby', 1)
+print(works_data)
+save_as_csv()
+
+#blob = requests.get('https://archiveofourown.org/works/' + str(3596997) + '/kudos').text
+#obj = BeautifulSoup(blob, features='lxml')
+#obj2 = obj.find('p', {'class': 'kudos'})
+#obj3 = obj.find('ol', {'class': 'pagination action'})
+#print(obj2)
+#if obj2 is None:
+#    print('is none')
+
+#print(scrape_kudos_pages('https://archiveofourown.org/works/30623630/kudos'))
+#print(scrape_kudos_pages('https://archiveofourown.org/works/30377634/kudos'))
+#print(get_kudos_users(obj))
